@@ -1,0 +1,132 @@
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\huigwon\TTTEST.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\huigwon\.
+Requires JDK:	Yes
+Requires 64-Bit: No
+Java min ver:	1.008.000
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe (OK)
+Check javac:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javac.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\huigwon\TTTEST.exe"
+Args length:	44/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\huigwon\TTTEST2.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\huigwon\.
+Requires JDK:	Yes
+Requires 64-Bit: No
+Java min ver:	1.008.000
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe (OK)
+Check javac:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javac.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\huigwon\TTTEST2.exe"
+Args length:	45/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\huigwon\TTTEST3.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\huigwon\.
+Requires JDK:	Yes
+Requires 64-Bit: No
+Java min ver:	1.008.000
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe (OK)
+Check javac:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javac.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\huigwon\TTTEST3.exe"
+Args length:	45/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\huigwon\TTTEST4.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\huigwon\.
+Requires JDK:	Yes
+Requires 64-Bit: No
+Java min ver:	1.008.000
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe (OK)
+Check javac:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javac.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\huigwon\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\huigwon\TTTEST4.exe"
+Args length:	45/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\SinBalJang\SinBalJang.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\SinBalJang\.
+Requires JDK:	Yes
+Requires 64-Bit: No
+Java min ver:	1.008.000
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javaw.exe (OK)
+Check javac:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javac.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\SinBalJang\SinBalJang.exe"
+Args length:	51/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\SinBalJang\SinBalJang.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\SinBalJang\.
+Requires JDK:	Yes
+Requires 64-Bit: No
+Java min ver:	1.008.000
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javaw.exe (OK)
+Check javac:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javac.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\SinBalJang\SinBalJang.exe"
+Args length:	51/32768 chars
+Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\b\Desktop\SinBalJang\SinBalJang.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\b\Desktop\SinBalJang\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	
+Java max ver:	
+JRE paths:	jdk-11.0.12
+Check launcher:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javaw.exe (OK)
+Version string: 1.011.000_012 / 64-Bit (OK)
+Launcher:	C:\Users\b\Desktop\SinBalJang\jdk-11.0.12\bin\javaw.exe
+Launcher args:	-jar "C:\Users\b\Desktop\SinBalJang\SinBalJang.exe"
+Args length:	51/32768 chars
+Exit code:	0
