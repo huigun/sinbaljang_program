@@ -360,7 +360,7 @@ public class WinMain extends JFrame {
 	    }
 		};
 		
-		String columnNames4[] = {"주문번호","제품번호", "수량", "주문자", "주문일","주문자번호","상태","재고현황"};
+		String columnNames4[] = {"주문번호","제품번호", "수량", "주문자", "주문일","주문자번호","재고현황","상태"};
 		dtm4 = new DefaultTableModel(columnNames4,0) {
 		@Override
 	    public boolean isCellEditable(int row, int column) { // 셀 수정 불가능
@@ -827,14 +827,14 @@ protected void ShowOAll() {
 			record[4] = rs.getString("odate");
 			record[5] = rs.getString("omtel");
 			if(rs.getString("ocon").equals("1")) {
-			record[6] = "대기중";
+			record[7] = "대기중";
 			} else if(rs.getString("ocon").equals("2")) {
-			record[6] = "완료";
+			record[7] = "완료";
 			}
 			if(pnum.equals("0")) {
-				record[7] = "재고없음";
+				record[6] = "재고없음";
 			} else {
-				record[7] = "재고있음";
+				record[6] = "재고있음";
 			}
 			dtm.addRow(record);
 		}
