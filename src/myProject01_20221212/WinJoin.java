@@ -5,36 +5,37 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.Window.Type;
 import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
-import javax.swing.JCheckBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.swing.JPasswordField;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class WinJoin extends JDialog {
 
@@ -51,6 +52,8 @@ public class WinJoin extends JDialog {
 	private JTextField tfAdmin;
 	String stId;
 	JOptionPane aa;
+	private JTextField tfPw2;
+	private int idFlag;
 
 	/**
 	 * Launch the application.
@@ -72,7 +75,7 @@ public class WinJoin extends JDialog {
 		getContentPane().setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		setUndecorated(true);
 		setTitle("SinBalJang");
-		setSize(345, 472);
+		setSize(345, 505);
 		// 프레임 크기
 		Dimension frameSize = getSize();
 		// 모니터 크기
@@ -93,7 +96,7 @@ public class WinJoin extends JDialog {
 		contentPanel.add(lblTitle);
 		
 		JPanel panelBtn = new JPanel();
-		panelBtn.setBounds(1, 439, 343, 32);
+		panelBtn.setBounds(1, 472, 343, 32);
 		contentPanel.add(panelBtn);
 		panelBtn.setLayout(null);
 		
@@ -113,7 +116,7 @@ public class WinJoin extends JDialog {
 		btnNewButton_1.setBounds(149, 0, 92, 31);
 		panelBtn.add(btnNewButton_1);
 		
-		JButton btnNewButton_1_1 = new JButton("\uC885\uB8CC");
+		JButton btnNewButton_1_1 = new JButton("종료");
 		btnNewButton_1_1.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -128,7 +131,7 @@ public class WinJoin extends JDialog {
 		panelBtn.add(btnNewButton_1_1);
 		
 		panelLogin = new JPanel();
-		panelLogin.setBounds(1, 176, 343, 260);
+		panelLogin.setBounds(1, 176, 343, 286);
 		contentPanel.add(panelLogin);
 		panelLogin.setLayout(null);
 		
@@ -148,49 +151,81 @@ public class WinJoin extends JDialog {
 		panelLogin.add(tfPw);
 		
 		tfId = new JTextField();
+		tfId.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				idFlag=0;
+			}
+		});
 		tfId.setColumns(10);
-		tfId.setBounds(114, 11, 174, 27);
+		tfId.setBounds(114, 11, 135, 27);
 		panelLogin.add(tfId);
 		
 		JLabel lblName = new JLabel("\uC9C0\uC810\uBA85 :");
 		lblName.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		lblName.setBounds(12, 85, 118, 27);
+		lblName.setBounds(12, 122, 118, 27);
 		panelLogin.add(lblName);
 		
 		tfName = new JTextField();
 		tfName.setColumns(10);
-		tfName.setBounds(114, 86, 174, 27);
+		tfName.setBounds(114, 123, 174, 27);
 		panelLogin.add(tfName);
 		
 		JLabel lblTel = new JLabel("TEL :");
 		lblTel.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		lblTel.setBounds(12, 122, 118, 27);
+		lblTel.setBounds(12, 159, 118, 27);
 		panelLogin.add(lblTel);
 		
 		tfTel = new JTextField();
 		tfTel.setColumns(10);
-		tfTel.setBounds(114, 123, 218, 27);
+		tfTel.setBounds(114, 160, 218, 27);
 		panelLogin.add(tfTel);
 		
 		JLabel lblAddress = new JLabel("\uC8FC\uC18C :");
 		lblAddress.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		lblAddress.setBounds(12, 159, 118, 27);
+		lblAddress.setBounds(12, 196, 118, 27);
 		panelLogin.add(lblAddress);
 		
 		tfAddress = new JTextField();
 		tfAddress.setColumns(10);
-		tfAddress.setBounds(114, 159, 218, 27);
+		tfAddress.setBounds(114, 196, 218, 27);
 		panelLogin.add(tfAddress);
 		
 		JLabel lblAdmin = new JLabel("\uAD00\uB9AC\uC790 :");
 		lblAdmin.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		lblAdmin.setBounds(12, 194, 118, 27);
+		lblAdmin.setBounds(12, 231, 118, 27);
 		panelLogin.add(lblAdmin);
 		
 		tfAdmin = new JTextField();
 		tfAdmin.setColumns(10);
-		tfAdmin.setBounds(114, 196, 109, 27);
+		tfAdmin.setBounds(114, 233, 109, 27);
 		panelLogin.add(tfAdmin);
+		
+		JLabel lblPwCheck = new JLabel("PW CHECK :");
+		lblPwCheck.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		lblPwCheck.setBounds(12, 85, 118, 27);
+		panelLogin.add(lblPwCheck);
+		
+		tfPw2 = new JTextField();
+		tfPw2.setColumns(10);
+		tfPw2.setBounds(114, 85, 174, 27);
+		panelLogin.add(tfPw2);
+		
+		JButton btnNewButton_1_2 = new JButton("\uC911\uBCF5\uD655\uC778");
+		btnNewButton_1_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tfId.getText().equals("")) {
+					aa.showMessageDialog(null, "아이디를 입력 해주세요.");
+				} else {
+					IdCheck();
+				}
+			}
+		});
+		btnNewButton_1_2.setHorizontalAlignment(SwingConstants.RIGHT);
+		btnNewButton_1_2.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		btnNewButton_1_2.setBackground(new Color(192, 192, 192));
+		btnNewButton_1_2.setBounds(252, 11, 82, 27);
+		panelLogin.add(btnNewButton_1_2);
 		
 		JLabel lblNewLabel = new JLabel("2000\uB144 0\uC6D4 00\uC77C");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -233,8 +268,38 @@ public class WinJoin extends JDialog {
 		panel.add(lblNewLabel_3);
 	}
 
-	protected void Join() throws Exception {
+	protected void IdCheck() {
 		// TODO Auto-generated method stub
+		String id = tfId.getText();
+		idFlag=0;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
+			String user = "system";
+			String password = "1234";
+			Connection con = DriverManager.getConnection(url, user, password);
+			
+			String sql="";
+			
+			Statement stmt = con.createStatement();
+			sql = "SELECT * FROM storetbl WHERE stid='"+id+"'";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			if(rs.next()==false) {
+				aa.showMessageDialog(null, "가입 가능한 아이디 입니다.");
+				idFlag=1;
+			} else {
+				do {
+					aa.showMessageDialog(null, "중복된 아이디 입니다. 다른 아이디를 입력 해주세요.");
+				} while(rs.next()) ;
+			}
+			
+		} catch (ClassNotFoundException | SQLException e1) {
+		}
+		
+	}
+
+	protected void Join() throws Exception {
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -255,27 +320,39 @@ public class WinJoin extends JDialog {
 			
 			sql = "INSERT INTO storetbl VALUES(store_SEQ.nextval,'"+stId+"','"+stPw+"','"+stName+"','"+stTel+"','"+stAddress+"','"+stAdmin+"','"+stDate+"')";
 			int stFlag = 0;
+			if(idFlag==1) {
+			if(tfPw.getText().equals(tfPw2.getText())) {
 				stFlag = stmt.executeUpdate(sql);
-				if(stFlag==1) {
+				if(stFlag==1 ) {
 					aa.showMessageDialog(null, "가입성공");
 					WinLogin winLogin = new WinLogin();
 					winLogin.setVisible(true);
 					setVisible(false);
 				} else {
-				aa.showMessageDialog(null, "가입실패 다시 시도 해주세요");
+					aa.showMessageDialog(null, "다시 시도 해주세요.");
 				}
-			
-//			if(stFlag==1) {
-//				aa = new JOptionPane();
-//				aa.showMessageDialog(null, "가입완료");
-//				setVisible(false);
-//				WinLogin winLogin = new WinLogin();
-//				winLogin.setVisible(true);
-//			} else {
-//				aa.showMessageDialog(null, "가입실패 다시 시도 해주세요");
-//			}
+			} else {
+				aa.showMessageDialog(null, "비밀번호가 일치하지 않습니다.");
+			}
+			} else {
+				aa.showMessageDialog(null, "아이디 중복확인을 해주세요.");
+			}
 		} catch (ClassNotFoundException | SQLException e1) {
-			e1.printStackTrace();
+			if(tfId.getText().equals("")) {
+				aa.showMessageDialog(null, "아이디를 입력 해주세요.");
+			} else if(tfPw.getText().equals("")) {
+				aa.showMessageDialog(null, "비밀번호를 입력 해주세요.");
+			} else if(tfPw2.getText().equals("")) {
+				aa.showMessageDialog(null, "비밀번호 체크를 입력 해주세요.");
+			} else if(tfName.getText().equals("")) {
+				aa.showMessageDialog(null, "지점명을 입력 해주세요.");
+			} else if(tfTel.getText().equals("")) {
+				aa.showMessageDialog(null, "전화번호를 입력 해주세요.");
+			} else if(tfAddress.getText().equals("")) {
+				aa.showMessageDialog(null, "주소를 입력 해주세요.");
+			} else if(tfAdmin.getText().equals("")) {
+				aa.showMessageDialog(null, "관리자를 입력 해주세요.");
+			}
 		}
 	}
 }

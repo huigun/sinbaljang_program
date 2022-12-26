@@ -122,8 +122,7 @@ public class WinLogin extends JDialog {
 				
 				WinJoin winJoin = new WinJoin();
 				winJoin.setVisible(true);
-				setModal(true);
-				
+				setVisible(false);
 			}
 		});
 		btnNewButton_1_2.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
