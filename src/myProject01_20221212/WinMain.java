@@ -52,12 +52,21 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.VetoableChangeListener;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class WinMain extends JFrame {
 
 	private JPanel contentPane;
 	JPanel panelHead;
 	Dimension size;
+	private String stName;
 	int x,y;
 	int srow=9999999;
 	int row4;
@@ -130,6 +139,15 @@ public class WinMain extends JFrame {
 	private JLabel lblNewLabel_8;
 	private JLabel lblNewLabel_9;
 	private JLabel lblNewLabel_10;
+	private String day2="";
+	private String day1="";
+	private String month1="";
+	private String month2="";
+	private DefaultTableCellRenderer dtcr2;
+	private JComboBox cbMonth;
+	private JComboBox cbDay;
+	private int i;
+	private String sm="";
 	/**
 	 * Launch the application.
 	 */
@@ -137,7 +155,8 @@ public class WinMain extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					WinMain frame = new WinMain();
+					String stName="";
+					WinMain frame = new WinMain(stName);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -149,14 +168,19 @@ public class WinMain extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public WinMain() {
-
+	public WinMain(String stName) {
+		this.stName=stName;
 		
 		setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowActivated(WindowEvent e) {
+			public void windowOpened(WindowEvent e) {
 				ShowSAll();
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				
 				ShowOAll();
 				ShowDMAll();
 				ShowHMAll();
@@ -246,9 +270,9 @@ public class WinMain extends JFrame {
 		lblNewLabel_1.setBounds(160, 6, 71, 15);
 		panelHead.add(lblNewLabel_1);
 		
-		JLabel lblNewLabel_2 = new JLabel("MINI 지점");
+		JLabel lblNewLabel_2 = new JLabel(stName+ " 지점");
 		lblNewLabel_2.setFont(new Font("맑은 고딕", Font.BOLD, 14));
-		lblNewLabel_2.setBounds(216, 6, 167, 15);
+		lblNewLabel_2.setBounds(216, 6, 142, 15);
 		panelHead.add(lblNewLabel_2);
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -310,6 +334,36 @@ public class WinMain extends JFrame {
 		btnSDelete.setBounds(120, 276, 110, 44);
 		panel1_1.add(btnSDelete);
 		
+		cbMonth = new JComboBox();
+		cbMonth.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				 if(e.getStateChange()==ItemEvent.SELECTED) {
+					 sm = cbMonth.getSelectedItem().toString();
+					 day2="";
+							 ShowS();
+				 }
+			}
+		});
+		cbMonth.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}));
+		cbMonth.setBounds(12, 10, 48, 23);
+		panel1_1.add(cbMonth);
+		
+		cbDay = new JComboBox();
+		cbDay.setModel(new DefaultComboBoxModel(new String[] {}));
+		cbDay.setBounds(68, 10, 48, 23);
+		panel1_1.add(cbDay);
+		
+		JButton btnSSearch = new JButton("\uAC80\uC0C9");
+		btnSSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShowS();
+			}
+		});
+		btnSSearch.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		btnSSearch.setBackground(Color.WHITE);
+		btnSSearch.setBounds(146, 10, 67, 31);
+		panel1_1.add(btnSSearch);
+		
 		panel1_2 = new JPanel();
 		panel1_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(128, 128, 128)));
 		panel1_2.setBounds(12, 422, 560, 24);
@@ -356,6 +410,10 @@ public class WinMain extends JFrame {
 		tcm1.getColumn(6).setCellRenderer(dtcr);
 		tcm1.getColumn(7).setCellRenderer(dtcr);
 		
+//		dtcr2 = new DefaultTableCellRenderer(); // 디폴트테이블셀렌더러를 생성
+//		dtcr2.setHorizontalAlignment(SwingConstants.RIGHT); // 오른쪽정렬
+//		tcm0 = table1.getRow
+		table1.setAutoCreateRowSorter(true); // 칼럼정렬
 		// 셀 너비 조절
 		int widths[] = {10,90,35,40,40,5,20};
 		for(int i=0;i<7;i++) {
@@ -380,7 +438,7 @@ public class WinMain extends JFrame {
 	    }
 		};
 		
-		String columnNames4[] = {"주문번호","제품번호", "수량", "주문자", "주문일","주문자번호","재고현황","상태"};
+		String columnNames4[] = {"주문번호","제품번호","제품명", "수량", "주문자", "주문일","주문자번호","재고현황","상태"};
 		dtm4 = new DefaultTableModel(columnNames4,0) {
 		@Override
 	    public boolean isCellEditable(int row, int column) { // 셀 수정 불가능
@@ -530,6 +588,7 @@ public class WinMain extends JFrame {
 					try {
 						shownum = Integer.parseInt(table2.getValueAt(row, 0).toString());
 						sellItem();
+						ShowSAll();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						aa.showMessageDialog(null, "제품을 선택 해주세요.");
@@ -699,7 +758,7 @@ public class WinMain extends JFrame {
 		
 		JPanel panel4 = new JPanel();
 		panel4.setLayout(null);
-		tabbedPane.addTab("주문 목록", null, panel4, null);
+		tabbedPane.addTab("주문목록", null, panel4, null);
 		scrollPane4 = new JScrollPane();
 		scrollPane4.setBounds(12, 10, 560, 402);
 		panel4.add(scrollPane4);
@@ -712,7 +771,7 @@ public class WinMain extends JFrame {
 		tcm4.getColumn(i).setCellRenderer(dtcr);
 		}
 		// 테이블4 셀 너비 조절
-		int widths4[] = {10,40,35,40,40,5,20,40};
+		int widths4[] = {10,40,40,10,20,15,40,20,20};
 		for(int i=0;i<7;i++) {
 			TableColumn column = table4.getColumnModel().getColumn(i);
 			column.setPreferredWidth(widths4[i]);
@@ -796,7 +855,7 @@ public class WinMain extends JFrame {
 		table6 = new JTable(dtm6);
 		scrollPane5_2.setViewportView(table6);
 		
-		lblNewLabel_8 = new JLabel("\uAC8C\uC2DC\uD310");
+		lblNewLabel_8 = new JLabel("");
 		lblNewLabel_8.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_8.setFont(new Font("맑은 고딕", Font.PLAIN, 25));
 		lblNewLabel_8.setBounds(287, 10, 301, 88);
@@ -849,13 +908,13 @@ public class WinMain extends JFrame {
 	}
 
 protected void DmInsert() {
-		// TODO Auto-generated method stub
-		WinDmInsert winDmInsert = new WinDmInsert();
+		
+		WinDmInsert winDmInsert = new WinDmInsert(stName);
 		winDmInsert.setVisible(true);
 	}
 
 protected void ShowHMAll() {
-		// TODO Auto-generated method stub
+		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -883,7 +942,6 @@ protected void ShowHMAll() {
 	}
 
 protected void ShowDMAll() {
-		// TODO Auto-generated method stub
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -892,7 +950,7 @@ protected void ShowDMAll() {
 		Connection con = DriverManager.getConnection(url, user, password);
 		Statement stmt = con.createStatement();			
 		String sql = "";
-		sql = "SELECT * FROM dmtbl ORDER BY dmdate DESC";
+		sql = "SELECT * FROM dmtbl WHERE dmrecipient='"+stName+"' ORDER BY dmdate DESC";
 		ResultSet rs = stmt.executeQuery(sql);
 		String record[] = new String[4];
 		dtm6 = (DefaultTableModel)table6.getModel();
@@ -911,7 +969,7 @@ protected void ShowDMAll() {
 	}
 
 protected void ConUpdate() {
-		// TODO Auto-generated method stub
+		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -921,7 +979,7 @@ protected void ConUpdate() {
 		onum = Integer.parseInt(table4.getValueAt(row4, 0).toString());
 		Statement stmt = con.createStatement();			
 		String sql = "";
-		String situation = table4.getValueAt(row4, 7).toString();
+		String situation = table4.getValueAt(row4, 8).toString();
 		if(!situation.equals("완료")) {
 			sql = "UPDATE ordertbl SET ocon = '2' WHERE onum="+onum;
 		int conFlag = stmt.executeUpdate(sql);
@@ -937,7 +995,7 @@ protected void ConUpdate() {
 	}
 
 protected void ConUpdate2() {
-	// TODO Auto-generated method stub
+	
 try {
 	Class.forName("oracle.jdbc.driver.OracleDriver");
 	String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -955,7 +1013,7 @@ try {
 }
 
 protected void ShowOAll() {
-		// TODO Auto-generated method stub
+		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -966,7 +1024,7 @@ protected void ShowOAll() {
 		String sql = "";
 		sql = "select * from orderTBL ORDER BY onum ASC";
 		ResultSet rs = stmt.executeQuery(sql);
-		String record[] = new String[8];
+		String record[] = new String[9];
 		DefaultTableModel dtm = (DefaultTableModel)table4.getModel();
 		dtm.setRowCount(0);
 		while(rs.next()) {
@@ -975,19 +1033,20 @@ protected void ShowOAll() {
 			showitem();
 			record[0] = rs.getString("onum");
 			record[1] = rs.getString("opnum");
-			record[2] = rs.getString("ocount");
-			record[3] = rs.getString("omname");
-			record[4] = rs.getString("odate");
-			record[5] = rs.getString("omtel");
+			record[2] = rs.getString("opname");
+			record[3] = rs.getString("ocount");
+			record[4] = rs.getString("omname");
+			record[5] = rs.getString("odate");
+			record[6] = rs.getString("omtel");
 			if(rs.getString("ocon").equals("1")) {
-			record[7] = "대기중";
+			record[8] = "대기중";
 			} else if(rs.getString("ocon").equals("2")) {
-			record[7] = "완료";
+			record[8] = "완료";
 			}
 			if(pnum.equals("0")) {
-				record[6] = "재고없음";
+				record[7] = "재고없음";
 			} else {
-				record[6] = "재고있음";
+				record[7] = "재고있음";
 			}
 			dtm.addRow(record);
 		}
@@ -998,7 +1057,7 @@ protected void ShowOAll() {
 	}
 
 protected void aa() {
-		// TODO Auto-generated method stub
+		
 	
 	// 물품 등록 더미데이터 생성
 	try {
@@ -1033,7 +1092,7 @@ protected void aa() {
 	}
 
 protected void PSearch() {
-		// TODO Auto-generated method stub
+		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -1069,7 +1128,7 @@ protected void PSearch() {
 
 
 protected void PDelete() {
-		// TODO Auto-generated method stub
+		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -1090,7 +1149,7 @@ protected void PDelete() {
 	}
 
 protected void SellDeldete() {
-		// TODO Auto-generated method stub
+		
 		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -1111,7 +1170,7 @@ protected void SellDeldete() {
 	}
 
 protected void productInsert() {
-		// TODO Auto-generated method stub
+		
 		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -1148,7 +1207,7 @@ protected void productInsert() {
 	}
 
 protected void deleteitem() {
-		// TODO Auto-generated method stub
+		
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");
 		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -1215,7 +1274,7 @@ protected void sellItem() throws Exception {
 	}
 
 	private void showitem() {
-	// TODO Auto-generated method stub
+	
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
@@ -1244,7 +1303,7 @@ protected void sellItem() throws Exception {
 		}
 }
 
-	protected void ShowSAll() {
+	protected void ShowS() {
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -1255,6 +1314,82 @@ protected void sellItem() throws Exception {
 			
 			Statement stmt = con.createStatement();			
 			String sql = "";
+			sm = cbMonth.getSelectedItem().toString();
+			sql = "select * from sellTBL WHERE sDate LIKE '%"+sm+"%' ORDER BY sDate ASC";
+			ResultSet rs = stmt.executeQuery(sql);
+			
+			cnt=0;
+			String record[] = new String[8];
+			DefaultTableModel dtm = (DefaultTableModel)table1.getModel();
+			dtm.setRowCount(0);
+			int i=0;
+			cbDay.removeAllItems();
+			while(rs.next()) {
+				ssu = rs.getRow(); // 총 판매 물품 갯수
+				String sDate = rs.getString("sDate"); 
+				int month0 = sDate.indexOf("-");
+				int month00 = sDate.indexOf("-", 5);
+				int day0 = sDate.indexOf(" ");
+				
+				month1 = sDate.substring(month0+1, month00); 
+				day1 = sDate.substring(month00+1, day0);
+				System.out.println("d1 = " +day1);
+				System.out.println("d2 = " +day2);
+				if(!day1.equals(day2)) {
+					cbDay.addItem(day1);
+					}
+				day2 = day1;
+				month2 = month1;
+				//
+				record[0] = Integer.toString(++cnt);
+				record[1] = sDate;
+				record[2] = rs.getString("sNum");
+				record[3] = rs.getString("sName");
+				record[4] = rs.getString("sSize");
+				record[5] = rs.getString("sUser");
+				record[6] = "1";
+				record[7] = rs.getString("sPrice");
+				
+				dtm.addRow(record); // 테이블에 한줄 추가함
+				int sum=0;
+				String tb1sum="";
+				for(i=0;i<=table1.getRowCount()-1;i++) {
+					if(!table1.getValueAt(i, 7).toString().equals(null)) {
+						int tb1 = Integer.parseInt(table1.getValueAt(i, 7).toString());
+						sum = sum+tb1;
+						tb1sum = Integer.toString(sum);
+					} 
+				}
+				int sum2=0;
+				String tb1sum2="";
+				for(i=0;i<=table1.getRowCount()-1;i++) {
+					if(!table1.getValueAt(i, 7).toString().equals(null)) {
+						int tb2 = Integer.parseInt(table1.getValueAt(i, 6).toString());
+						sum2 = sum2+tb2;
+						tb1sum2 = Integer.toString(sum2);
+					} 
+				}
+				lblNewLabel_5.setText(tb1sum+"원");
+				textField_2.setText("총"+tb1sum2+"건");
+			}
+			
+		} catch (ClassNotFoundException | SQLException e1) {
+			e1.printStackTrace();
+		}
+	} 
+	
+protected void ShowSAll() {
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
+			String user = "system";
+			String password = "1234";
+			Connection con = DriverManager.getConnection(url, user, password);
+			
+			Statement stmt = con.createStatement();			
+			String sql = "";
+			sm = cbMonth.getSelectedItem().toString();
 			sql = "select * from sellTBL ORDER BY sDate ASC";
 			ResultSet rs = stmt.executeQuery(sql);
 			
@@ -1262,47 +1397,64 @@ protected void sellItem() throws Exception {
 			String record[] = new String[8];
 			DefaultTableModel dtm = (DefaultTableModel)table1.getModel();
 			dtm.setRowCount(0);
+			int i=0;
+			cbDay.removeAllItems();
+			cbMonth.removeAllItems();
 			while(rs.next()) {
 				ssu = rs.getRow(); // 총 판매 물품 갯수
+				String sDate = rs.getString("sDate"); 
+				int month0 = sDate.indexOf("-");
+				int month00 = sDate.indexOf("-", 5);
+				int day0 = sDate.indexOf(" ");
 				
+				month1 = sDate.substring(month0+1, month00); 
+				day1 = sDate.substring(month00+1, day0);
+				
+//				if(!day1.equals(day2)) {
+//					cbDay.addItem(day1);
+//					}
+				if(!month1.equals(month2)) {
+					cbMonth.addItem(month1);
+				}
+				day2 = day1;
+				month2 = month1;
+				//
 				record[0] = Integer.toString(++cnt);
-				record[1] = rs.getString("sDate");
+				record[1] = sDate;
 				record[2] = rs.getString("sNum");
 				record[3] = rs.getString("sName");
 				record[4] = rs.getString("sSize");
 				record[5] = rs.getString("sUser");
 				record[6] = "1";
 				record[7] = rs.getString("sPrice");
-//				for(int i=1; i < record.length; i++)
-//					record[i] = rs.getString(i);
-				dtm.addRow(record);
 				
+				dtm.addRow(record); // 테이블에 한줄 추가함
 				int sum=0;
 				String tb1sum="";
-				for(int i=0;i<=table1.getRowCount()-1;i++) {
-				int tb1 = Integer.parseInt(table1.getValueAt(i, 7).toString());
-				sum = sum+tb1;
-				tb1sum = Integer.toString(sum);
-				
+				for(i=0;i<=table1.getRowCount()-1;i++) {
+					if(!table1.getValueAt(i, 7).toString().equals(null)) {
+						int tb1 = Integer.parseInt(table1.getValueAt(i, 7).toString());
+						sum = sum+tb1;
+						tb1sum = Integer.toString(sum);
+					} 
 				}
-				
 				int sum2=0;
 				String tb1sum2="";
-				for(int i=0;i<=table1.getRowCount()-1;i++) {
-				int tb2 = Integer.parseInt(table1.getValueAt(i, 6).toString());
-				sum2 = sum2+tb2;
-				tb1sum2 = Integer.toString(sum2);
+				for(i=0;i<=table1.getRowCount()-1;i++) {
+					if(!table1.getValueAt(i, 7).toString().equals(null)) {
+						int tb2 = Integer.parseInt(table1.getValueAt(i, 6).toString());
+						sum2 = sum2+tb2;
+						tb1sum2 = Integer.toString(sum2);
+					} 
 				}
-				
 				lblNewLabel_5.setText(tb1sum+"원");
 				textField_2.setText("총"+tb1sum2+"건");
-			
 			}
+			
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();
 		}
 	} 
-	
 	protected void ShowProductAll() {
 	try {
 		Class.forName("oracle.jdbc.driver.OracleDriver");

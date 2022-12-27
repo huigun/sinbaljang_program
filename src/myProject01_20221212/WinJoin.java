@@ -168,7 +168,7 @@ public class WinJoin extends JDialog {
 		
 		tfName = new JTextField();
 		tfName.setColumns(10);
-		tfName.setBounds(114, 123, 174, 27);
+		tfName.setBounds(114, 123, 135, 27);
 		panelLogin.add(tfName);
 		
 		JLabel lblTel = new JLabel("TEL :");
@@ -227,6 +227,11 @@ public class WinJoin extends JDialog {
 		btnNewButton_1_2.setBounds(252, 11, 82, 27);
 		panelLogin.add(btnNewButton_1_2);
 		
+		JLabel lblNewLabel_4 = new JLabel("\uC9C0\uC810");
+		lblNewLabel_4.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 15));
+		lblNewLabel_4.setBounds(252, 118, 63, 32);
+		panelLogin.add(lblNewLabel_4);
+		
 		JLabel lblNewLabel = new JLabel("2000\uB144 0\uC6D4 00\uC77C");
 		lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewLabel.setBounds(237, 31, 115, 21);
@@ -258,7 +263,7 @@ public class WinJoin extends JDialog {
 		lblNewLabel_3.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
+				setVisible(false);
 			}
 		});
 		lblNewLabel_3.setBackground(new Color(255, 81, 81));

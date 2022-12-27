@@ -48,7 +48,7 @@ public class WinLogin extends JDialog {
 	private JTextField tfId;
 	private JLabel lblNewLabel_1;
 	JOptionPane aa;
-
+	String stName="123";
 	/**
 	 * Launch the application.
 	 */
@@ -109,7 +109,6 @@ public class WinLogin extends JDialog {
 		btnNewButton_1_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
-			
 			}
 		});
 		btnNewButton_1_1.setBackground(Color.WHITE);
@@ -122,7 +121,7 @@ public class WinLogin extends JDialog {
 				
 				WinJoin winJoin = new WinJoin();
 				winJoin.setVisible(true);
-				setVisible(false);
+				winJoin.setModal(true);
 			}
 		});
 		btnNewButton_1_2.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 12));
@@ -228,10 +227,10 @@ public class WinLogin extends JDialog {
 			ResultSet rs = stmt.executeQuery(sql);
 			if(rs.next()) {
 				String pw = rs.getString("stPw");
-				
+				stName = rs.getString("stname");
 				if(tfPw.getText().equals(pw)) {
 					aa.showMessageDialog(null, "·Î±×ÀÎ ¼º°ø");
-					WinMain winMain = new WinMain();
+					WinMain winMain = new WinMain(stName);
 					winMain.setVisible(true);
 					setVisible(false);
 				} else {

@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.event.ActionListener;
@@ -29,7 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.awt.event.ActionEvent;
 
-public class WinDmInsert extends JDialog {
+public class WinDmInsert_저장용 extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField tfWriter;
@@ -58,9 +57,8 @@ public class WinDmInsert extends JDialog {
 
 			public void run() {
 				try {
-					WinDmInsert dialog = new WinDmInsert(stName);
-					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-					dialog.setVisible(true);
+					WinDmInsert_저장용 frame = new WinDmInsert_저장용(stName);
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -71,9 +69,10 @@ public class WinDmInsert extends JDialog {
 	/**
 	 * Create the frame.
 	 */
-	public WinDmInsert(String stName) {
+	public WinDmInsert_저장용(String stName) {
 		this.stName=stName;
 		setTitle("\uBA54\uC138\uC9C0 \uC791\uC131");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 725, 510);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(240, 240, 240));
