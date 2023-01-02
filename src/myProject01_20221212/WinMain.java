@@ -35,6 +35,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class WinMain extends JFrame {
 	JTextField lblSPSize;
 	private JTextField tfSUser;
 	JOptionPane aa;
+	int sdcnt;
 	int psu;
 	int ssu;
 	private JTextField tfPUser;
@@ -148,6 +150,7 @@ public class WinMain extends JFrame {
 	private JComboBox cbDay;
 	private int i;
 	private String sm="";
+	private String sday;
 	/**
 	 * Launch the application.
 	 */
@@ -335,12 +338,14 @@ public class WinMain extends JFrame {
 		panel1_1.add(btnSDelete);
 		
 		cbMonth = new JComboBox();
+		cbMonth.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		cbMonth.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				 if(e.getStateChange()==ItemEvent.SELECTED) {
 					 sm = cbMonth.getSelectedItem().toString();
-					 day2="";
-							 ShowS();
+					 day2=""; 
+							 ShowSM();
+							
 				 }
 			}
 		});
@@ -349,20 +354,44 @@ public class WinMain extends JFrame {
 		panel1_1.add(cbMonth);
 		
 		cbDay = new JComboBox();
+		cbDay.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		cbDay.addItemListener(new ItemListener() {
+
+			public void itemStateChanged(ItemEvent e) {
+				 if(e.getStateChange()==ItemEvent.SELECTED) {
+					 if(sdcnt>1) {
+						 sday = cbDay.getSelectedItem().toString();
+						 ShowSD();
+					 } sdcnt++;
+				 }
+			}
+		});
 		cbDay.setModel(new DefaultComboBoxModel(new String[] {}));
 		cbDay.setBounds(68, 10, 48, 23);
 		panel1_1.add(cbDay);
 		
-		JButton btnSSearch = new JButton("\uAC80\uC0C9");
+		JButton btnSSearch = new JButton("\uCD08\uAE30\uD654");
 		btnSSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ShowS();
+				String nowtime = LocalDate.now().toString();
+				int month2 = nowtime.indexOf("-");
+				int month22 = nowtime.indexOf("-", 5);
+				sm = nowtime.substring(month2+1, month22);
+				sday = nowtime.substring(month22+1);
+				ShowSD();
+				cbMonth.setSelectedItem(sm);
+				cbDay.setSelectedItem(sday);
 			}
 		});
 		btnSSearch.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
 		btnSSearch.setBackground(Color.WHITE);
-		btnSSearch.setBounds(146, 10, 67, 31);
+		btnSSearch.setBounds(128, 10, 85, 31);
 		panel1_1.add(btnSSearch);
+		
+		JLabel lblNewLabel_7 = new JLabel("(\uC624\uB298 \uD604\uD669)");
+		lblNewLabel_7.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		lblNewLabel_7.setBounds(138, 42, 77, 23);
+		panel1_1.add(lblNewLabel_7);
 		
 		panel1_2 = new JPanel();
 		panel1_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(128, 128, 128)));
@@ -455,7 +484,7 @@ public class WinMain extends JFrame {
 		    }
 			};
 		
-			String columnNames5[] = {"번호","일시","제목","작성자"};
+			String columnNames5[] = {"번호","고유번호","일시","제목","작성자"};
 			dtm5 = new DefaultTableModel(columnNames5,0) {
 			@Override
 		    public boolean isCellEditable(int row, int column) { // 셀 수정 불가능
@@ -464,7 +493,7 @@ public class WinMain extends JFrame {
 		    }
 			};
 			
-			String columnNames6[] = {"번호","일시","제목","작성자"};
+			String columnNames6[] = {"번호","고유번호","일시","제목","작성자"};
 			dtm6 = new DefaultTableModel(columnNames6,0) {
 			@Override
 		    public boolean isCellEditable(int row, int column) { // 셀 수정 불가능
@@ -588,7 +617,7 @@ public class WinMain extends JFrame {
 					try {
 						shownum = Integer.parseInt(table2.getValueAt(row, 0).toString());
 						sellItem();
-						ShowSAll();
+						btnSSearch.doClick();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						aa.showMessageDialog(null, "제품을 선택 해주세요.");
@@ -841,18 +870,42 @@ public class WinMain extends JFrame {
 		panel5.add(scrollPane5_1);
 		
 		table5 = new JTable(dtm5);
+		table5.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2) {
+					int row0=table5.getSelectedRow();
+					String msnum = dtm5.getValueAt(row0, 1).toString();
+					WinMView winMView = new WinMView(msnum);
+					winMView.setVisible(true);
+				}
+			}
+		});
 		scrollPane5_1.setViewportView(table5);
 		
 		tcm5 = table5.getColumnModel();
 		tcm5.getColumn(0).setCellRenderer(dtcr);
 		tcm5.getColumn(1).setCellRenderer(dtcr);
+		tcm5.getColumn(2).setCellRenderer(dtcr);
 		tcm5.getColumn(3).setCellRenderer(dtcr);
+		tcm5.getColumn(4).setCellRenderer(dtcr);
 		
 		scrollPane5_2 = new JScrollPane();
 		scrollPane5_2.setBounds(445, 127, 413, 330);
 		panel5.add(scrollPane5_2);
 		
 		table6 = new JTable(dtm6);
+		table6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount()==2) {
+					int row0=table6.getSelectedRow();
+					String msnum = dtm6.getValueAt(row0, 1).toString();
+					WinMView winMView = new WinMView(msnum);
+					winMView.setVisible(true);
+				}
+			}
+		});
 		scrollPane5_2.setViewportView(table6);
 		
 		lblNewLabel_8 = new JLabel("");
@@ -886,25 +939,92 @@ public class WinMain extends JFrame {
 		tcm6 = table6.getColumnModel();
 		tcm6.getColumn(0).setCellRenderer(dtcr);
 		tcm6.getColumn(1).setCellRenderer(dtcr);
+		tcm6.getColumn(2).setCellRenderer(dtcr);
 		tcm6.getColumn(3).setCellRenderer(dtcr);
+		tcm6.getColumn(4).setCellRenderer(dtcr);
 		// 셀 너비 조절
-		int widths5[] = {10,130,250,60};
-		for(int i=0;i<4;i++) {
+		int widths5[] = {35,55,130,250,60};
+		for(int i=0;i<5;i++) {
 			TableColumn column = table5.getColumnModel().getColumn(i);
 			column.setPreferredWidth(widths5[i]);
 		}
 		
-		for(int i=0;i<4;i++) {
+		for(int i=0;i<5;i++) {
 			TableColumn column = table6.getColumnModel().getColumn(i);
 			column.setPreferredWidth(widths5[i]);
 		}
+	}
+
+protected void ShowSD() {
+		// TODO Auto-generated method stub
 		
-
-//		NullLayoutManager aa = new NullLayoutManager(contentPane,634,300);
-//		aa.addContainer(contentPane,tabbedPane,50, 50, 30, 30);
-
-//		aa.addContainer(panel, 0, 0, 100,6);
-
+	try {
+		Class.forName("oracle.jdbc.driver.OracleDriver");
+		String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
+		String user = "system";
+		String password = "1234";
+		Connection con = DriverManager.getConnection(url, user, password);
+		
+		Statement stmt = con.createStatement();			
+		String sql = "";
+		
+		sql = "select * from sellTBL WHERE sDate LIKE '%"+sm+"-"+sday+"%' ORDER BY sDate ASC";
+		 ResultSet rs = stmt.executeQuery(sql);
+		
+		cnt=0;
+		String record[] = new String[8];
+		DefaultTableModel dtm = (DefaultTableModel)table1.getModel();
+		dtm.setRowCount(0);
+		int i=0;
+		while(rs.next()) {
+			ssu = rs.getRow(); // 총 판매 물품 갯수
+			String sDate = rs.getString("sDate"); 
+			int month0 = sDate.indexOf("-");
+			int month00 = sDate.indexOf("-", 5);
+			int day0 = sDate.indexOf(" ");
+			
+			month1 = sDate.substring(month0+1, month00); 
+			day1 = sDate.substring(month00+1, day0);
+			
+			day2 = day1;
+			month2 = month1;
+			//
+			record[0] = Integer.toString(++cnt);
+			record[1] = sDate;
+			record[2] = rs.getString("sNum");
+			record[3] = rs.getString("sName");
+			record[4] = rs.getString("sSize");
+			record[5] = rs.getString("sUser");
+			record[6] = "1";
+			record[7] = rs.getString("sPrice");
+			
+			dtm.addRow(record); // 테이블에 한줄 추가함
+			int sum=0;
+			String tb1sum="";
+			for(i=0;i<=table1.getRowCount()-1;i++) {
+				if(!table1.getValueAt(i, 7).toString().equals(null)) {
+					int tb1 = Integer.parseInt(table1.getValueAt(i, 7).toString());
+					sum = sum+tb1;
+					tb1sum = Integer.toString(sum);
+				} 
+			}
+			int sum2=0;
+			String tb1sum2="";
+			for(i=0;i<=table1.getRowCount()-1;i++) {
+				if(!table1.getValueAt(i, 7).toString().equals(null)) {
+					int tb2 = Integer.parseInt(table1.getValueAt(i, 6).toString());
+					sum2 = sum2+tb2;
+					tb1sum2 = Integer.toString(sum2);
+				} 
+			}
+			lblNewLabel_5.setText(tb1sum+"원");
+			textField_2.setText("총"+tb1sum2+"건");
+		}
+		
+	} catch (ClassNotFoundException | SQLException e1) {
+		e1.printStackTrace();
+	}
+	
 	}
 
 protected void DmInsert() {
@@ -923,17 +1043,18 @@ protected void ShowHMAll() {
 		Connection con = DriverManager.getConnection(url, user, password);
 		Statement stmt = con.createStatement();			
 		String sql = "";
-		sql = "SELECT * FROM hmtbl ORDER BY hmdate DESC";
+		sql = "SELECT * FROM dmtbl WHERE dmrecipient='공지' ORDER BY dmdate DESC";
 		ResultSet rs = stmt.executeQuery(sql);
-		String record[] = new String[4];
+		String record[] = new String[5];
 		dtm5 = (DefaultTableModel)table5.getModel();
 		dtm5.setRowCount(0);
 		cnt=0;
 		while(rs.next()) {
 			record[0] = Integer.toString(++cnt);
-			record[1] = rs.getString("hmdate");
-			record[2] = rs.getString("hmtitle");
-			record[3] = rs.getString("hmwriter");
+			record[1] = rs.getString("dmnum");
+			record[2] = rs.getString("dmdate");
+			record[3] = rs.getString("dmtitle");
+			record[4] = rs.getString("dmwriter");
 			dtm5.addRow(record);
 		}
 	} catch (ClassNotFoundException | SQLException e1) {
@@ -952,15 +1073,17 @@ protected void ShowDMAll() {
 		String sql = "";
 		sql = "SELECT * FROM dmtbl WHERE dmrecipient='"+stName+"' ORDER BY dmdate DESC";
 		ResultSet rs = stmt.executeQuery(sql);
-		String record[] = new String[4];
+		String record[] = new String[5];
 		dtm6 = (DefaultTableModel)table6.getModel();
 		dtm6.setRowCount(0);
 		cnt=0;
 		while(rs.next()) {
 			record[0] = Integer.toString(++cnt);
-			record[1] = rs.getString("dmdate");
-			record[2] = rs.getString("dmtitle");
-			record[3] = rs.getString("dmwriter");
+			record[1] = rs.getString("dmnum");
+			record[2] = rs.getString("dmdate");
+			record[3] = rs.getString("dmtitle");
+			record[4] = rs.getString("dmwriter");
+			
 			dtm6.addRow(record);
 		}
 	} catch (ClassNotFoundException | SQLException e1) {
@@ -1069,14 +1192,14 @@ protected void aa() {
 		
 		Statement stmt = con.createStatement();
 		String sql = "";
-		for(int i=0;i<=100;i++) {
+		for(int i=0;i<=10;i++) {
 			String pname="gstest"+i;
 			String psize="240";
 			String pprice="30000";
 			String pdate=LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // 날짜
 			String puser="안희권";
 			String pimage="이미지 없음";
-			sql = "INSERT INTO producttbl VALUES(product_SEQ.nextval,'"+pname+"',"+pprice+","+psize+",'"+puser+"','"+pdate+"','"+pimage+"')";
+			sql = "INSERT INTO producttbl2 VALUES(product_SEQ.nextval,'"+pname+"',"+pprice+","+psize+",'"+puser+"','"+pdate+"','"+pimage+"')";
 			int iItem = stmt.executeUpdate(sql);
 			if(iItem>=1) {
 				System.out.println("재고등록 성공");
@@ -1239,21 +1362,17 @@ protected void sellItem() throws Exception {
 		Statement stmt = con.createStatement();
 		String sql = "";
 		
-//		String snum=lblSPNum.getText();
-//		String sname=lblSPName.getText();
-//		String ssize=lblSPSize.getText();
-//		String sPrice=lblSPPrice.getText();
 		String sdate= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-//		String suser=textField_1.getText();
 		
 		sql = "INSERT INTO selltbl VALUES("+pnum+",'"+pname+"',"+psize+","+pprice+",'"+sdate+"','"+puser+"')";
-		
+		System.out.println(sql);
 			sellFlag = stmt.executeUpdate(sql);
 			if(sellFlag>=1) {
 				aa.showMessageDialog(null, "판매등록 성공");
 				deleteitem(); // 판매등록 성공시 해당 아이템 삭제
 				PSearch();
 				ShowProductAll();
+				month2 = "";
 				row=9999999;
 			} else {
 				aa.showMessageDialog(null, "판매등록 실패");
@@ -1303,7 +1422,7 @@ protected void sellItem() throws Exception {
 		}
 }
 
-	protected void ShowS() {
+	protected void ShowSM() {
 		
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -1314,16 +1433,15 @@ protected void sellItem() throws Exception {
 			
 			Statement stmt = con.createStatement();			
 			String sql = "";
-			sm = cbMonth.getSelectedItem().toString();
-			sql = "select * from sellTBL WHERE sDate LIKE '%"+sm+"%' ORDER BY sDate ASC";
+			sql = "select * from sellTBL WHERE sDate LIKE '%-"+sm+"-%' ORDER BY sDate ASC";
 			ResultSet rs = stmt.executeQuery(sql);
-			
 			cnt=0;
 			String record[] = new String[8];
 			DefaultTableModel dtm = (DefaultTableModel)table1.getModel();
 			dtm.setRowCount(0);
 			int i=0;
 			cbDay.removeAllItems();
+			sdcnt=1;
 			while(rs.next()) {
 				ssu = rs.getRow(); // 총 판매 물품 갯수
 				String sDate = rs.getString("sDate"); 
@@ -1333,8 +1451,9 @@ protected void sellItem() throws Exception {
 				
 				month1 = sDate.substring(month0+1, month00); 
 				day1 = sDate.substring(month00+1, day0);
-				System.out.println("d1 = " +day1);
-				System.out.println("d2 = " +day2);
+				if(cbDay.getItemCount()==0) {
+					cbDay.addItem("일");
+				}
 				if(!day1.equals(day2)) {
 					cbDay.addItem(day1);
 					}
@@ -1352,6 +1471,7 @@ protected void sellItem() throws Exception {
 				
 				dtm.addRow(record); // 테이블에 한줄 추가함
 				int sum=0;
+				
 				String tb1sum="";
 				for(i=0;i<=table1.getRowCount()-1;i++) {
 					if(!table1.getValueAt(i, 7).toString().equals(null)) {
@@ -1390,7 +1510,7 @@ protected void ShowSAll() {
 			Statement stmt = con.createStatement();			
 			String sql = "";
 			sm = cbMonth.getSelectedItem().toString();
-			sql = "select * from sellTBL ORDER BY sDate ASC";
+			sql = "SELECT * FROM sellTBL ORDER BY sDate ASC";
 			ResultSet rs = stmt.executeQuery(sql);
 			
 			cnt=0;
@@ -1406,13 +1526,11 @@ protected void ShowSAll() {
 				int month0 = sDate.indexOf("-");
 				int month00 = sDate.indexOf("-", 5);
 				int day0 = sDate.indexOf(" ");
-				
 				month1 = sDate.substring(month0+1, month00); 
 				day1 = sDate.substring(month00+1, day0);
-				
-//				if(!day1.equals(day2)) {
-//					cbDay.addItem(day1);
-//					}
+				if(cbMonth.getItemCount()==0) {
+					cbMonth.addItem("달");
+				}
 				if(!month1.equals(month2)) {
 					cbMonth.addItem(month1);
 				}
