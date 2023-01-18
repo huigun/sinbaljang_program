@@ -79,12 +79,12 @@ public class WinLogin extends JDialog {
 		
 		
 		getContentPane().setLayout(new BorderLayout());
-		//contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+//		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPanel.setBorder(new TitledBorder(new LineBorder(Color.red)));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		JLabel lblTitle = new JLabel("mini");
+		JLabel lblTitle = new JLabel("");
 		lblTitle.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 14));
 		lblTitle.setBounds(10, 34, 57, 15);
 		contentPanel.add(lblTitle);

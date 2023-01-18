@@ -6,6 +6,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 
 import javax.swing.JLabel;
@@ -22,14 +24,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -52,18 +52,16 @@ import java.awt.Toolkit;
 import javax.swing.border.TitledBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.VetoableChangeListener;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 
 public class WinMain extends JFrame {
 
+	String showname;
+	int showsize;
+	static int tr00=0;
 	private JPanel contentPane;
 	JPanel panelHead;
 	Dimension size;
@@ -135,10 +133,9 @@ public class WinMain extends JFrame {
 	private int onum;
 	int sd=9999999;
 	private String opcount;
-	private JTable table5;
+	static JTable table5;
 	private JTable table6;
 	private int cnt;
-	private JLabel lblNewLabel_8;
 	private JLabel lblNewLabel_9;
 	private JLabel lblNewLabel_10;
 	private String day2="";
@@ -151,6 +148,7 @@ public class WinMain extends JFrame {
 	private int i;
 	private String sm="";
 	private String sday;
+	private MyTableCellRenderer render;
 	/**
 	 * Launch the application.
 	 */
@@ -167,6 +165,26 @@ public class WinMain extends JFrame {
 			}
 		});
 	}
+	// 여기
+	static class MyTableCellRenderer extends DefaultTableCellRenderer {
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                       boolean hasFocus, int row, int column) {
+            // Call the superclass method to get the default renderer component
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+//             Change the font of the first column and row
+            if (table5.getValueAt(row,5).toString().equals("읽음")) {
+                c.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+                setHorizontalAlignment(SwingConstants.CENTER);
+            } else {
+            	c.setFont(new Font("맑은 고딕", Font.BOLD, 13));
+            	setHorizontalAlignment(SwingConstants.CENTER);
+            }
+
+            return c;
+        }
+    }
 
 	/**
 	 * Create the frame.
@@ -211,9 +229,11 @@ public class WinMain extends JFrame {
 				scrollPane2.setSize(800,470);
 				scrollPane3.setSize(800,470);
 				scrollPane4.setSize(800,470);
+
+				scrollPane5_1.setBounds(12, 40, x/2-19, y-110);
+				scrollPane5_2.setBounds(5+x/2, 40, x/2-19, y-110);
 				
-				scrollPane5_1.setBounds(12, 120, x/2-19, y-186);
-				scrollPane5_2.setBounds(5+x/2, 120, x/2-19, y-186);
+				
 				Dimension sp1size = scrollPane1.getSize();
 				int sp1x = sp1size.width;
 				int sp1y = sp1size.height;
@@ -222,10 +242,10 @@ public class WinMain extends JFrame {
 				int sp2x = sp2size.width;
 				int sp2y = sp2size.height;
 				
-				lblNewLabel_8.setBounds(x/2-152, 10, 300, 88);
-				lblNewLabel_9.setBounds(12, 100, 68, 15);
-				lblNewLabel_10.setBounds(5+x/2, 100, 68, 15);
-				btnWrite.setBounds(x-110, 93, 97, 23);
+				lblNewLabel_9.setBounds(12, 10, 68, 15);
+				lblNewLabel_10.setBounds(5+x/2, 10, 68, 15);
+				
+				btnWrite.setBounds(x-110, 4, 97, 23);
 				
 				panel1_1.setBounds(sp2x+25, 10, 250, 350);
 				panel1_2.setBounds(12, sp1y+20, 800, 30);
@@ -467,7 +487,7 @@ public class WinMain extends JFrame {
 	    }
 		};
 		
-		String columnNames4[] = {"주문번호","제품번호","제품명", "수량", "주문자", "주문일","주문자번호","재고현황","상태"};
+		String columnNames4[] = {"주문번호","제품명","사이즈", "수량", "주문자", "번호","주소","주문일시","재고현황","상태"};
 		dtm4 = new DefaultTableModel(columnNames4,0) {
 		@Override
 	    public boolean isCellEditable(int row, int column) { // 셀 수정 불가능
@@ -484,7 +504,7 @@ public class WinMain extends JFrame {
 		    }
 			};
 		
-			String columnNames5[] = {"번호","고유번호","일시","제목","작성자"};
+			String columnNames5[] = {"번호","고유번호","일시","제목","작성자","확인여부"};
 			dtm5 = new DefaultTableModel(columnNames5,0) {
 			@Override
 		    public boolean isCellEditable(int row, int column) { // 셀 수정 불가능
@@ -800,8 +820,8 @@ public class WinMain extends JFrame {
 		tcm4.getColumn(i).setCellRenderer(dtcr);
 		}
 		// 테이블4 셀 너비 조절
-		int widths4[] = {10,40,40,10,20,15,40,20,20};
-		for(int i=0;i<7;i++) {
+		int widths4[] = {10,40,20,10,20,80,60,120,10,10};
+		for(int i=0;i<10;i++) {
 			TableColumn column = table4.getColumnModel().getColumn(i);
 			column.setPreferredWidth(widths4[i]);
 		}
@@ -816,23 +836,23 @@ public class WinMain extends JFrame {
 		JButton btnOInsert = new JButton("판매");
 		btnOInsert.addActionListener(new ActionListener() {
 			private String con;
-
 			public void actionPerformed(ActionEvent e) {
 				try {
 					pnum="0";
 					opcount = "재고없음";
 					row4 = table4.getSelectedRow();
-					con = (String) table4.getValueAt(row4, 6);
-					shownum = Integer.parseInt(table4.getValueAt(row4, 1).toString());
-					showitem();
-					if(pnum.equals("0")) {
+					con = (String) table4.getValueAt(row4, 8);
+					//shownum = Integer.parseInt(table4.getValueAt(row4, 1).toString());
+					//showitem();
+					if(con.equals("X")) {
 						aa.showMessageDialog(null, "해당 재고가 없습니다.");
-					} else {
+					} else if(con.equals("O")){
 						ConUpdate();
 						ShowOAll();
 					}
 					
 				} catch (Exception e2) {
+					e2.printStackTrace();
 					aa.showMessageDialog(null, "주문을 선택 해주세요.");
 				}
 			}
@@ -866,10 +886,13 @@ public class WinMain extends JFrame {
 		tabbedPane.addTab("게시판", null, panel5, null);
 		
 		scrollPane5_1 = new JScrollPane();
-		scrollPane5_1.setBounds(12, 127, 421, 330);
+		scrollPane5_1.setBounds(12, 43, 421, 258);
 		panel5.add(scrollPane5_1);
 		
 		table5 = new JTable(dtm5);
+		render = new MyTableCellRenderer();
+		table5.setDefaultRenderer(Object.class, render);
+		table5.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		table5.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -883,15 +906,15 @@ public class WinMain extends JFrame {
 		});
 		scrollPane5_1.setViewportView(table5);
 		
-		tcm5 = table5.getColumnModel();
-		tcm5.getColumn(0).setCellRenderer(dtcr);
-		tcm5.getColumn(1).setCellRenderer(dtcr);
-		tcm5.getColumn(2).setCellRenderer(dtcr);
-		tcm5.getColumn(3).setCellRenderer(dtcr);
-		tcm5.getColumn(4).setCellRenderer(dtcr);
+//		tcm5 = table5.getColumnModel();
+//		tcm5.getColumn(0).setCellRenderer(dtcr);
+//		tcm5.getColumn(1).setCellRenderer(dtcr);
+//		tcm5.getColumn(2).setCellRenderer(dtcr);
+//		tcm5.getColumn(3).setCellRenderer(dtcr);
+//		tcm5.getColumn(4).setCellRenderer(dtcr);
 		
 		scrollPane5_2 = new JScrollPane();
-		scrollPane5_2.setBounds(445, 127, 413, 330);
+		scrollPane5_2.setBounds(445, 43, 413, 258);
 		panel5.add(scrollPane5_2);
 		
 		table6 = new JTable(dtm6);
@@ -908,20 +931,14 @@ public class WinMain extends JFrame {
 		});
 		scrollPane5_2.setViewportView(table6);
 		
-		lblNewLabel_8 = new JLabel("");
-		lblNewLabel_8.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_8.setFont(new Font("맑은 고딕", Font.PLAIN, 25));
-		lblNewLabel_8.setBounds(287, 10, 301, 88);
-		panel5.add(lblNewLabel_8);
-		
 		lblNewLabel_9 = new JLabel("\uBCF8\uC0AC \u25B6 \uB9E4\uC7A5");
 		lblNewLabel_9.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		lblNewLabel_9.setBounds(12, 108, 68, 15);
+		lblNewLabel_9.setBounds(12, 24, 68, 15);
 		panel5.add(lblNewLabel_9);
 		
 		lblNewLabel_10 = new JLabel("\uB9E4\uC7A5 \u25B6 \uB9E4\uC7A5");
 		lblNewLabel_10.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		lblNewLabel_10.setBounds(445, 108, 68, 15);
+		lblNewLabel_10.setBounds(445, 24, 68, 15);
 		panel5.add(lblNewLabel_10);
 		
 		btnWrite = new JButton("글 쓰기");
@@ -932,7 +949,7 @@ public class WinMain extends JFrame {
 		});
 		btnWrite.setBackground(new Color(255, 255, 255));
 		btnWrite.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
-		btnWrite.setBounds(761, 94, 97, 23);
+		btnWrite.setBounds(761, 10, 97, 23);
 		panel5.add(btnWrite);
 //		lblNewLabel_3_5.setIcon(new ImageIcon("D:\\AHG\\image\\hollydick - 복사본.jpg"));
 		
@@ -943,7 +960,7 @@ public class WinMain extends JFrame {
 		tcm6.getColumn(3).setCellRenderer(dtcr);
 		tcm6.getColumn(4).setCellRenderer(dtcr);
 		// 셀 너비 조절
-		int widths5[] = {35,55,130,250,60};
+		int widths5[] = {35,65,180,230,60,40};
 		for(int i=0;i<5;i++) {
 			TableColumn column = table5.getColumnModel().getColumn(i);
 			column.setPreferredWidth(widths5[i]);
@@ -1043,20 +1060,33 @@ protected void ShowHMAll() {
 		Connection con = DriverManager.getConnection(url, user, password);
 		Statement stmt = con.createStatement();			
 		String sql = "";
-		sql = "SELECT * FROM dmtbl WHERE dmrecipient='공지' ORDER BY dmdate DESC";
+		sql = "SELECT * FROM dmtbl WHERE dmrecipient LIKE '%공지_"+stName+"%' ORDER BY dmdate DESC";
 		ResultSet rs = stmt.executeQuery(sql);
-		String record[] = new String[5];
+		String record[] = new String[6];
 		dtm5 = (DefaultTableModel)table5.getModel();
 		dtm5.setRowCount(0);
 		cnt=0;
+		// 여기2
 		while(rs.next()) {
+			
 			record[0] = Integer.toString(++cnt);
 			record[1] = rs.getString("dmnum");
 			record[2] = rs.getString("dmdate");
 			record[3] = rs.getString("dmtitle");
 			record[4] = rs.getString("dmwriter");
+			if(rs.getString("dmread").equals("1")){
+				record[5] = "읽음";
+			} else if(rs.getString("dmread").equals("0")) {
+				record[5] = "읽지않음";
+			}
 			dtm5.addRow(record);
+			
+			if(rs.getString("dmread").equals("1")) {
+				
+			} else if(rs.getString("dmread").equals("0")) {
+			}
 		}
+		
 	} catch (ClassNotFoundException | SQLException e1) {
 		e1.printStackTrace();
 	}
@@ -1102,7 +1132,7 @@ protected void ConUpdate() {
 		onum = Integer.parseInt(table4.getValueAt(row4, 0).toString());
 		Statement stmt = con.createStatement();			
 		String sql = "";
-		String situation = table4.getValueAt(row4, 8).toString();
+		String situation = table4.getValueAt(row4, 9).toString();
 		if(!situation.equals("완료")) {
 			sql = "UPDATE ordertbl SET ocon = '2' WHERE onum="+onum;
 		int conFlag = stmt.executeUpdate(sql);
@@ -1145,31 +1175,41 @@ protected void ShowOAll() {
 		Connection con = DriverManager.getConnection(url, user, password);
 		Statement stmt = con.createStatement();			
 		String sql = "";
+		String sql2 = "";
+		ArrayList<String> allp = new ArrayList<>();
+		sql2 = sql = "select * from productTBL"; 
+		ResultSet rs2 = stmt.executeQuery(sql2);
+		while(rs2.next()) {
+			String pname = rs2.getString("pname");
+			String psize = rs2.getString("psize");
+			allp.add(pname+"_"+psize);
+		}
 		sql = "select * from orderTBL ORDER BY onum ASC";
 		ResultSet rs = stmt.executeQuery(sql);
-		String record[] = new String[9];
+		String record[] = new String[10];
 		DefaultTableModel dtm = (DefaultTableModel)table4.getModel();
 		dtm.setRowCount(0);
+		
 		while(rs.next()) {
-			pnum="0";
-			shownum=Integer.parseInt(rs.getString("opnum"));
-			showitem();
+			String pname = rs.getString("opname");
+			String psize = rs.getString("osize");
 			record[0] = rs.getString("onum");
-			record[1] = rs.getString("opnum");
-			record[2] = rs.getString("opname");
+			record[1] = rs.getString("opname");
+			record[2] = rs.getString("osize");
 			record[3] = rs.getString("ocount");
 			record[4] = rs.getString("omname");
-			record[5] = rs.getString("odate");
-			record[6] = rs.getString("omtel");
+			record[5] = rs.getString("omtel");
+			record[6] = rs.getString("omaddress");
+			record[7] = rs.getString("odate");
 			if(rs.getString("ocon").equals("1")) {
-			record[8] = "대기중";
+			record[9] = "대기중";
 			} else if(rs.getString("ocon").equals("2")) {
-			record[8] = "완료";
+			record[9] = "완료";
 			}
-			if(pnum.equals("0")) {
-				record[7] = "재고없음";
+			if(allp.contains(pname+"_"+psize)==false) {
+				record[8] = "X";
 			} else {
-				record[7] = "재고있음";
+				record[8] = "O";
 			}
 			dtm.addRow(record);
 		}
@@ -1365,7 +1405,6 @@ protected void sellItem() throws Exception {
 		String sdate= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 		
 		sql = "INSERT INTO selltbl VALUES("+pnum+",'"+pname+"',"+psize+","+pprice+",'"+sdate+"','"+puser+"')";
-		System.out.println(sql);
 			sellFlag = stmt.executeUpdate(sql);
 			if(sellFlag>=1) {
 				aa.showMessageDialog(null, "판매등록 성공");
@@ -1421,7 +1460,28 @@ protected void sellItem() throws Exception {
 			e1.printStackTrace();
 		}
 }
-
+	
+	private void showitem2() {
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
+			String user = "system";
+			String password = "1234";
+			Connection con = DriverManager.getConnection(url, user, password);
+			
+			
+			Statement stmt = con.createStatement();			
+			String sql = "";
+			sql = "select * from productTBL"; 
+			ResultSet rs = stmt.executeQuery(sql);
+			while(rs.next()) {
+			}
+		} catch (ClassNotFoundException | SQLException e1) {
+			e1.printStackTrace();
+		}
+}
+	
 	protected void ShowSM() {
 		
 		try {
@@ -1603,4 +1663,6 @@ protected void ShowSAll() {
 		e1.printStackTrace();
 	}
 } 	
+	
 }
+

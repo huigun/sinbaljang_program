@@ -63,7 +63,7 @@ public class WinDmInsert extends JDialog {
 	private JLabel lblNewLabel;
 	private String dmfile;
 	JOptionPane aa;
-	private String stName;
+	private String stName="";
 	private JPanel panel;
 	private int i;
 	private JCheckBox chckbxNewCheckBox;
@@ -73,13 +73,14 @@ public class WinDmInsert extends JDialog {
 	private ArrayList<String> dmrp = new ArrayList<String>();
 	private int iDm;
 	private int iDmSum=0;
+	private JCheckBox chbNotice;
 	
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
-			private String stName;
+			private String stName="";
 
 			public void run() {
 				try {
@@ -131,7 +132,7 @@ public class WinDmInsert extends JDialog {
 		contentPane.add(tfWriter);
 		tfWriter.setColumns(10);
 		tfWriter.setText(stName);
-		lblNewLabel_2 = new JLabel("\uBC1B\uB294\uC0AC\uB78C :");
+		lblNewLabel_2 = new JLabel("\uBC1B\uB294\uC9C0\uC810 :");
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNewLabel_2.setFont(new Font("맑은 고딕", Font.BOLD, 12));
 		lblNewLabel_2.setBounds(615, 16, 57, 15);
@@ -154,8 +155,12 @@ public class WinDmInsert extends JDialog {
 		btnInsert = new JButton("전송");
 		btnInsert.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				DmInsert();
-				System.out.println(dmrp.size());
+				if(chbNotice.isSelected()==false) {
+					DmInsert();
+				} else if(chbNotice.isSelected()==true) {
+					NoticeInsert();
+					
+				}
 			}
 		});
 		btnInsert.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
@@ -197,6 +202,7 @@ public class WinDmInsert extends JDialog {
 		scrollPane_2.setEnabled(false);
 		scrollPane_2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane_2.setBounds(684, 16, 171, 445);
+		scrollPane_2.getVerticalScrollBar().setUnitIncrement(15);
 		contentPane.add(scrollPane_2);
 		
 		panel = new JPanel();
@@ -216,6 +222,19 @@ public class WinDmInsert extends JDialog {
 		});
 		panel.add(chbAll);
 		
+		chbNotice = new JCheckBox("공지");
+		chbNotice.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				chbAll.doClick();
+			}
+		});
+		chbNotice.setFont(new Font("맑은 고딕", Font.PLAIN, 12));
+		chbNotice.setBounds(558, 12, 49, 23);
+		contentPane.add(chbNotice);
+		if(!stName.equals("본사")) {
+			chbNotice.setVisible(false);
+		}
+		
 		
 		// 프레임 크기
 				Dimension frameSize = getSize();
@@ -225,6 +244,50 @@ public class WinDmInsert extends JDialog {
 				setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
 	}
 
+	protected void NoticeInsert() {
+		try {
+			for(int i=0;i<dmrp.size();i++) {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
+			String user = "system";
+			String password = "1234";
+			Connection con = DriverManager.getConnection(url, user, password);
+			
+			Statement stmt = con.createStatement();
+			String sql = "";
+				String dmtitle = tfTitle.getText();
+				String dmcontent = tfContent.getText();
+				String dmwriter = tfWriter.getText();
+				String dmdate=LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // 날짜
+				
+				if(tfFile.getText().equals("")) {
+					dmfile = "첨부파일 없음";
+				} else {
+				dmfile = tfFile.getText();
+				}
+				String dmrecipient="공지"+stName;
+				sql = "INSERT INTO dmtbl VALUES(dm_SEQ.nextval,'"+dmdate+"','"+dmtitle+"','"+dmcontent+"','"+dmwriter+"','"+dmrecipient+"','"+dmfile+"','0')";
+				iDm = stmt.executeUpdate(sql);
+				iDmSum = iDmSum + iDm;
+				
+				} if(iDmSum>dmrp.size()-1) {
+					aa.showMessageDialog(null, "등록 완료.");
+					setVisible(false);
+				} else {
+					aa.showMessageDialog(null, "등록 실패. 다시 시도 해주세요.");
+				}
+			
+		} catch (ClassNotFoundException | SQLException e1) {
+			if(tfTitle.getText().equals("")) {
+				aa.showMessageDialog(null, "제목을 입력 해주세요");
+			} else if(tfContent.getText().equals("")) {
+				aa.showMessageDialog(null, "내용을 입력 해주세요.");
+			} else {
+				aa.showMessageDialog(null, "알수없는 오류.");
+			}e1.printStackTrace();
+		}
+	
+}
 	protected void SStore() {
 		
 		try {
@@ -251,9 +314,10 @@ public class WinDmInsert extends JDialog {
 			while(rs.next()) {
 				int checkCount=0;
 				
+				if(!rs.getString("stname").equals("본사") && !rs.getString("stname").equals(stName)) {
 				stname = new JCheckBox(rs.getString("stname"));
 				stname.setBounds(10, i*25+10, 50, 20);
-				
+				}
 				stname.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent e) {
 						if(((JCheckBox)e.getSource()).isSelected()==true) {
@@ -310,10 +374,9 @@ public class WinDmInsert extends JDialog {
 				} else {
 				dmfile = tfFile.getText();
 				}
-				
 				String dmrecipient = dmrp.get(i);
 				
-				sql = "INSERT INTO dmtbl VALUES(dm_SEQ.nextval,'"+dmdate+"','"+dmtitle+"','"+dmcontent+"','"+dmwriter+"','"+dmrecipient+"','"+dmfile+"')";
+				sql = "INSERT INTO dmtbl VALUES(dm_SEQ.nextval,'"+dmdate+"','"+dmtitle+"','"+dmcontent+"','"+dmwriter+"','"+dmrecipient+"','"+dmfile+"','0')";
 				iDm = stmt.executeUpdate(sql);
 				iDmSum = iDmSum + iDm;
 				
@@ -333,6 +396,8 @@ public class WinDmInsert extends JDialog {
 				aa.showMessageDialog(null, "제목을 입력 해주세요");
 			} else if(tfContent.getText().equals("")) {
 				aa.showMessageDialog(null, "내용을 입력 해주세요.");
+			} else {
+				aa.showMessageDialog(null, "알수없는 오류.");
 			}
 		}
 		

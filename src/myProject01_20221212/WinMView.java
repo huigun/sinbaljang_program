@@ -49,6 +49,7 @@ public class WinMView extends JDialog {
 	private JLabel lblNewLabel;
 	JOptionPane aa;
 	static String msnum;
+	private JTextField tfMTime;
 	/**
 	 * Launch the application.
 	 */
@@ -75,6 +76,7 @@ public class WinMView extends JDialog {
 			@Override
 			public void windowOpened(WindowEvent e) {
 				ShowMS();
+				ReadUp();
 			}
 		});
 		this.msnum=msnum;
@@ -160,6 +162,18 @@ public class WinMView extends JDialog {
 		tfTitle.setEditable(false);
 		tfTitle.setLineWrap(true);
 		scrollPane_1.setViewportView(tfTitle);
+		
+		JLabel lblNewLabel_2_1 = new JLabel("\uBC1B\uC740\uC2DC\uAC04 :");
+		lblNewLabel_2_1.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNewLabel_2_1.setFont(new Font("맑은 고딕", Font.BOLD, 12));
+		lblNewLabel_2_1.setBounds(418, 18, 57, 15);
+		contentPane.add(lblNewLabel_2_1);
+		
+		tfMTime = new JTextField();
+		tfMTime.setEditable(false);
+		tfMTime.setColumns(10);
+		tfMTime.setBounds(487, 15, 130, 21);
+		contentPane.add(tfMTime);
 		// 프레임 크기
 				Dimension frameSize = getSize();
 				// 모니터 크기
@@ -167,6 +181,24 @@ public class WinMView extends JDialog {
 				// 모니터 중앙에 프레임 띄우기
 				setLocation((screenSize.width - frameSize.width) / 2, (screenSize.height - frameSize.height) / 2);
 	}
+
+	protected void ReadUp() {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@58.232.38.53:1521:xe";
+			String user = "system";
+			String password = "1234";
+			Connection con = DriverManager.getConnection(url, user, password);
+			Statement stmt = con.createStatement();			
+			String sql = "";
+			sql = "UPDATE dmtbl SET dmread='1' WHERE dmnum="+msnum;
+			
+			stmt.executeUpdate(sql);
+		} catch (ClassNotFoundException | SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
 
 	protected void ShowMS() {
 		
@@ -186,6 +218,7 @@ public class WinMView extends JDialog {
 				tfRecipient.setText(rs.getString("dmrecipient"));
 				tfContent.setText(rs.getString("dmcontent"));
 				tfTitle.setText(rs.getString("dmtitle"));
+				tfMTime.setText(rs.getString("dmdate"));
 			}
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();
